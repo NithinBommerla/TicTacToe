@@ -19,4 +19,11 @@ public class Move {
     public void setCell(Cell cell) {
         this.cell = cell;
     }
+
+    // Constructor
+
+    public Move(Player player, Cell cell) {
+        this.player = player;
+        this.cell = cell;
+    }
 }

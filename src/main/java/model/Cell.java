@@ -5,7 +5,7 @@ import model.constant.CellState;
 public class Cell {
     private Position position;
     private CellState cellState;
-    // private Player player;
+    private Player player;
 
     public Position getPosition() {
         return position;
@@ -23,17 +23,18 @@ public class Cell {
         this.cellState = cellState;
     }
 
-//    public Player getPlayer() {
-//        return player;
-//    }
-//
-//    public void setPlayer(Player player) {
-//        this.player = player;
-//    }
+    public Player getPlayer() {
+        return player;
+    }
 
-    public Cell (Position position, CellState cellState) {
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
+    public Cell (Position position) {
         this.position = position;
-        this.cellState = cellState;
+        this.cellState = CellState.EMPTY;
+        this.player = null;
     }
 
 }

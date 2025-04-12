@@ -32,8 +32,18 @@ public class Board {
         for(int i = 0; i < size; i++) {
             cells.add(new ArrayList<>(size));
             for(int j = 0; j < size; j++) {
-                cells.get(i).add(new Cell(new Position(i, j), CellState.EMPTY));
+                cells.get(i).add(new Cell(new Position(i, j)));
             }
         }
+    }
+
+    public Board clone() {
+        Board boardClone = new Board(this.size);
+        for(int i = 0; i < size; i++) {
+            for(int j = 0; j < size; j++) {
+                boardClone.cells.get(i).set(j, this.getCells().get(i).get(j));
+            }
+        }
+        return boardClone;
     }
 }
