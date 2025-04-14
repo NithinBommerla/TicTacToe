@@ -20,7 +20,7 @@ public class EasyBotPlayingStrategy implements BotPlayingStrategy{
                     game.getBoardHistory().add(board.clone());
                     // TODO: Randomize the move for the Bot
                     // Identify all the empty cells and choose a cell randomly
-
+                    return move;
                 }
             }
         }

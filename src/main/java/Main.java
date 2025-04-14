@@ -1,0 +1,73 @@
+import controller.GameController;
+import exception.GameDrawnException;
+import model.Game;
+import model.Move;
+import model.Player;
+import model.constant.GameState;
+import model.constant.PlayerType;
+import service.BoardService;
+import service.GameService;
+import service.PlayerService;
+
+import java.util.List;
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        System.out.println("Welcome to TIC-TAC-TOE Game");
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Please enter the dimension of the board to begin the game");
+        int dimension = sc.nextInt();
+
+        GameService gameService = new GameService(dimension);
+        PlayerService playerService = new PlayerService();
+        BoardService boardService = new BoardService();
+        GameController gameController = new GameController(playerService, gameService, boardService);
+
+
+        List<Player> players = gameController.generatePlayersList(dimension - 1);
+        Game game = gameService.createGame(players, dimension);
+        game = gameService.startGame(game);
+        int moveIndex = 0;
+
+        while(true) {
+            Player currentPlayer = game.getPlayers().get(moveIndex);
+            System.out.println("Player to make a move: " +currentPlayer.getName());
+            Move currentMove = gameController.createMove(currentPlayer, game);
+            gameController.displayBoard(game);
+
+            // Check and Ask for UNDO
+            if(currentPlayer.getPlayerType().equals(PlayerType.HUMAN) && !currentPlayer.isHasUsedUndo()) {
+                System.out.println("Please enter number of steps to UNDO if you want to UNDO else enter 0 ");
+                int undoCount = sc.nextInt();
+                if(undoCount > 0) {
+                    gameController.undo(undoCount, game);
+                    currentPlayer.setHasUsedUndo(true);
+                    gameController.displayBoard(game);
+                } else {
+                    System.out.println("UNDO not chosen, Moving forward");
+                }
+            }
+
+            // Check winner after every move
+            try {
+                GameState gameState = gameController.checkWinner(game, currentMove);
+                if(gameState.equals(GameState.WINNER)) {
+                    game.setWinner(currentPlayer);
+                    System.out.println("Game Won");
+                    System.out.println("Congratulations to the Winner "+currentPlayer.getName());
+                    System.out.println("Game Ends Here");
+                    break;
+                }
+            } catch (GameDrawnException ex) {
+                System.out.println("Game has drawn, No more Winners");
+                System.out.println("Thanks for playing");
+                System.out.println("Game Ends Here");
+                break;
+            }
+            moveIndex = (moveIndex + 1) % (dimension - 1); // Resets moveIndex to O after all the players in the game played their turn
+
+        }
+
+    }
+}

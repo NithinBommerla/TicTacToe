@@ -2,6 +2,7 @@ package model;
 
 import model.constant.GameState;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Game {
@@ -12,6 +13,14 @@ public class Game {
     private Player Winner;
     private List<Move> moveHistory;
     private List<Board> boardHistory;
+
+    // Constructor
+    public Game(Board board, List<Player> players) {
+        this.board = board;
+        this.boardHistory = new ArrayList<>();
+        this.moveHistory = new ArrayList<>();
+        this.players = players;
+    }
 
     public Board getBoard() {
         return board;

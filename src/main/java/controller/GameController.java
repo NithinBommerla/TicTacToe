@@ -1,7 +1,9 @@
 package controller;
 
 import model.*;
+import model.constant.GameState;
 import model.constant.PlayerType;
+import service.BoardService;
 import service.GameService;
 import service.PlayerService;
 
@@ -15,18 +17,20 @@ public class GameController {
     private Scanner sc;
     private PlayerService playerService;
     private GameService gameService;
+    private BoardService boardService;
     // Constructor
 
-    public GameController(PlayerService playerService, GameService gameService) {
+    public GameController(PlayerService playerService, GameService gameService, BoardService boardService) {
         this.sc = new Scanner(System.in);
         this.playerService = playerService;
         this.gameService = gameService;
+        this.boardService = boardService;
     }
 
     // Methods
 
     public List<Player> generatePlayersList(int playerCount) {
-        System.out.println("Please Enter 1 for Bot and 0 for Human pLayer");
+        System.out.println("Please Enter 1 if you want Bot in the game else 0");
         int botCheck = sc.nextInt();
         List<Player> players = new ArrayList<>();
 
@@ -41,9 +45,9 @@ public class GameController {
 
         for(int i = 0; i < playerCount; i++) {
             System.out.println("Please Enter name for player: ");
-            String playerName = sc.nextLine();
+            String playerName = sc.next();
             System.out.println("Please Enter symbol for player: ");
-            char playerSymbol = sc.nextLine().charAt(0);
+            char playerSymbol = sc.next().charAt(0);
             Player player = playerService.createPlayer(playerName, playerSymbol);
             players.add(player);
         }
@@ -68,7 +72,10 @@ public class GameController {
         }
     }
 
-    public Player checkWinner(Board board, Move move) {return null;}
+    public GameState checkWinner(Game game, Move move) {
+        // Returns GameState as per the status if the game (i.e. Winner, Drawn, In Progress)
+        return gameService.checkWinner(game, move);
+    }
 
     public Game undo(int noOfMoves, Game game) {return null;}
 
@@ -76,5 +83,8 @@ public class GameController {
 
     public void replayGame(Game game) {}
 
+    public void displayBoard(Game game) {
+        boardService.displayBoard(game.getBoard());
+    }
 
 }
