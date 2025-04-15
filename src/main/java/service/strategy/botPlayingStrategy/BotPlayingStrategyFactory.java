@@ -1,11 +1,10 @@
-package service.strategy;
+package service.strategy.botPlayingStrategy;
 
-import model.Bot;
 import model.constant.BotDifficultyLevel;
 
 public class BotPlayingStrategyFactory {
 
-    public BotPlayingStrategy getBotPlayingStrategy(BotDifficultyLevel botDifficultyLevel) {
+    public static BotPlayingStrategy getBotPlayingStrategy(BotDifficultyLevel botDifficultyLevel) {
         // TODO: Update this with switch case
         return switch (botDifficultyLevel) {
             case EASY -> new EasyBotPlayingStrategy();

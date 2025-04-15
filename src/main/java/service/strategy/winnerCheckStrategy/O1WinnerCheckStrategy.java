@@ -1,4 +1,4 @@
-package service.strategy;
+package service.strategy.winnerCheckStrategy;
 
 import exception.GameDrawnException;
 import model.Board;
@@ -10,8 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 
 public class O1WinnerCheckStrategy implements WinnerCheckStrategy{
-    HashMap<Character, Integer> topLeftDiagonal;
-    HashMap<Character, Integer> topRightDiagonal;
+    HashMap<Character, Integer> leftDiagonalMap;
+    HashMap<Character, Integer> rightDiagonalMap;
     HashMap<Character, Integer> cornerMap;
     List<HashMap<Character, Integer>> rowMaps;
     List<HashMap<Character, Integer>> columnMaps;
@@ -19,8 +19,8 @@ public class O1WinnerCheckStrategy implements WinnerCheckStrategy{
     // Constructor
 
     public O1WinnerCheckStrategy(int size) {
-        this.topLeftDiagonal = new HashMap<> ();
-        this.topRightDiagonal = new HashMap<> ();
+        this.leftDiagonalMap = new HashMap<> ();
+        this.rightDiagonalMap = new HashMap<> ();
         this.cornerMap = new HashMap<>();
         this.rowMaps = new ArrayList<>();
         this.columnMaps = new ArrayList<>();
@@ -39,25 +39,23 @@ public class O1WinnerCheckStrategy implements WinnerCheckStrategy{
         // Update row and column Maps
         HashMap<Character, Integer> rowMap = rowMaps.get(row);
         HashMap<Character, Integer> columnMap = columnMaps.get(column);
-        rowMap.put(symbol,rowMap.getOrDefault(symbol, 0) + 1 );
-        columnMap.put(symbol,columnMap.getOrDefault(symbol, 0) + 1 );
-
-        if(rowMap.get(symbol) == size || columnMap.get(symbol) == size) return currentMove.getPlayer();
-
+        rowMap.put(symbol, rowMap.getOrDefault(symbol, 0) + 1 );
+        columnMap.put(symbol, columnMap.getOrDefault(symbol, 0) + 1 );
+        // Check for winner in row and column Maps
+        if(rowMap.get(symbol) == size || columnMap.get(symbol) == size) return currentMove.getPlayer(); // Not using Get or default because every move is definitely associated with a row and a column.
         // Update the diagonalMaps if applicable
-
-        if(row == column) topLeftDiagonal.put(symbol,columnMap.getOrDefault(symbol, 0) + 1 );
-
-        if(row + column == size - 1) topRightDiagonal.put(symbol,columnMap.getOrDefault(symbol, 0) + 1 );
-
-        if(topLeftDiagonal.getOrDefault(symbol, 0) == size || topRightDiagonal.getOrDefault(symbol, 0) == size) return currentMove.getPlayer();
-
+        if(row == column) leftDiagonalMap.put(symbol, leftDiagonalMap.getOrDefault(symbol, 0) + 1 );
+        if(row + column == size - 1) rightDiagonalMap.put(symbol, rightDiagonalMap.getOrDefault(symbol, 0) + 1 );
+        // Check for winner in diagonal map
+        if(leftDiagonalMap.getOrDefault(symbol, 0) == size || rightDiagonalMap.getOrDefault(symbol, 0) == size) return currentMove.getPlayer();
         // Update the cornerMap if applicable
-        if((row == 0 || row == size-1) && (column == 0 || column == size-1)) columnMap.put(symbol,columnMap.getOrDefault(symbol, 0) + 1 );
-
+        if((row == 0 || row == size-1) && (column == 0 || column == size-1)) cornerMap.put(symbol, cornerMap.getOrDefault(symbol, 0) + 1 );
+        // Check for winner in corner map
         if(cornerMap.getOrDefault(symbol, 0) == 4) return currentMove.getPlayer();
-
-        if(checkDraw()) throw new GameDrawnException("Game is Drawn and there can be No Winner");
+        // Check for draw if there is no winner
+        if(checkDraw()) {
+            throw new GameDrawnException("Game is Drawn and there can be No Winner");
+        }
 
         return null;
     }
@@ -66,7 +64,7 @@ public class O1WinnerCheckStrategy implements WinnerCheckStrategy{
         // TODO: Optimise the TC by using count of Hashmaps instead of iterating everytime.
         for(HashMap<Character, Integer> map : rowMaps) if(map.size() <= 1) return false;
         for(HashMap<Character, Integer> map : columnMaps) if(map.size() <= 1) return false;
-        if(topLeftDiagonal.size() <= 1 || topRightDiagonal.size() <= 1 || cornerMap.size() <= 1) return false;
+        if(leftDiagonalMap.size() <= 1 || rightDiagonalMap.size() <= 1 || cornerMap.size() <= 1) return false;
         // return topLeftDiagonal.size() > 1 && topRightDiagonal.size() > 1 && cornerMap.size() > 1;
         return true;
     }

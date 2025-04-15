@@ -1,5 +1,6 @@
 package controller;
 
+import exception.DuplicateSymbolException;
 import model.*;
 import model.constant.GameState;
 import model.constant.PlayerType;
@@ -18,8 +19,8 @@ public class GameController {
     private PlayerService playerService;
     private GameService gameService;
     private BoardService boardService;
-    // Constructor
 
+    // Constructor
     public GameController(PlayerService playerService, GameService gameService, BoardService boardService) {
         this.sc = new Scanner(System.in);
         this.playerService = playerService;
@@ -28,28 +29,36 @@ public class GameController {
     }
 
     // Methods
-
     public List<Player> generatePlayersList(int playerCount) {
         System.out.println("Please Enter 1 if you want Bot in the game else 0");
         int botCheck = sc.nextInt();
         List<Player> players = new ArrayList<>();
 
         if(botCheck == 1) {
-            // TODO: Take User input for bot Difficulty level and create a bot accordingly
             // TODO: Take User input for bot Name and Symbol
-
+            // System.out.println("Please Enter Name for Bot:");
+            // TODO: Take User input for bot Difficulty level and create a bot accordingly
+            System.out.println("Please Enter Difficulty Level for Bot \n 0 for Easy \n 1 for Medium \n 2 for Hard");
             Bot bot = playerService.createBot("Bot", '$'); // Bot creation
             players.add(bot);
-            playerCount--; // Decrease the player count since bot contributes to one of the player.
+            playerCount--; // Decrease the player count since bot contributes to one of the players.
         }
 
         for(int i = 0; i < playerCount; i++) {
             System.out.println("Please Enter name for player: ");
             String playerName = sc.next();
-            System.out.println("Please Enter symbol for player: ");
-            char playerSymbol = sc.next().charAt(0);
-            Player player = playerService.createPlayer(playerName, playerSymbol);
-            players.add(player);
+            while(true) { // This loop is to ensure that Player who chooses a wrong symbol will get to choose again
+                    System.out.println("Please Enter symbol for player: ");
+                    char playerSymbol = sc.next().charAt(0);
+                try {
+                    Player player = playerService.createPlayer(playerName, playerSymbol);
+                    players.add(player);
+                    break;
+                } catch (DuplicateSymbolException ex){ // Catching Here instead of catching it in main so that the game doesn't loop over from bot selection again.
+                    System.out.println("Error: " + ex.getMessage());
+                    System.out.println("Please choose another symbol");
+                }
+            }
         }
 
         Collections.shuffle(players); // To randomize the order of players turn.
@@ -63,7 +72,7 @@ public class GameController {
             System.out.println("Enter column to make a move");
             int column = sc.nextInt();
             // TODO: Validate the move before proceeding
-            // i.e. whether the user's input is with in the range of board (row: 0 -> size-1, column: 0 -> size-1)
+            // i.e. whether the user's input is with in the range of board (row: [0, size-1], column: [0, size-1])
             return gameService.executeMove(player, game, row, column);
 
         } else {

@@ -1,4 +1,4 @@
-package service.strategy;
+package service.strategy.winnerCheckStrategy;
 
 import model.Board;
 import model.Move;

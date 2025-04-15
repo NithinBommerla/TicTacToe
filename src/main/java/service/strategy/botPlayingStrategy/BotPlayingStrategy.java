@@ -1,4 +1,4 @@
-package service.strategy;
+package service.strategy.botPlayingStrategy;
 
 import model.Game;
 import model.Move;

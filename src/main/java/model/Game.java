@@ -20,6 +20,7 @@ public class Game {
         this.boardHistory = new ArrayList<>();
         this.moveHistory = new ArrayList<>();
         this.players = players;
+        this.gameState = GameState.YET_TO_START;
     }
 
     public Board getBoard() {

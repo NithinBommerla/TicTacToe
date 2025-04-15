@@ -16,13 +16,10 @@ public class PlayerService {
         this.symbolSet = new HashSet<>();
     }
 
-
-
-
     public Player createPlayer(String name, char symbol) {
         if(symbolSet.contains(symbol)) {
-            throw new DuplicateSymbolException("The symbol chosen already exists " +symbol);
-        }
+            throw new DuplicateSymbolException("The symbol chosen (" + symbol +") already exists.");
+        } else symbolSet.add(symbol);
 
         return new Player(
                 counter++,
@@ -34,8 +31,8 @@ public class PlayerService {
 
     public Bot createBot(String name, char symbol) {
         if(symbolSet.contains(symbol)) {
-            throw new DuplicateSymbolException("The symbol chosen already exists " +symbol);
-        }
+            throw new DuplicateSymbolException("The symbol chosen (" + symbol +") already exists.");
+        } else symbolSet.add(symbol);
 
         return new Bot(
                 counter++,

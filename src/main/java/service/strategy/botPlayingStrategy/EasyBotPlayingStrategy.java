@@ -1,11 +1,11 @@
-package service.strategy;
+package service.strategy.botPlayingStrategy;
 
 import model.*;
 import model.constant.CellState;
 
 import java.util.List;
 
-public class MediumBotPlayingStrategy implements BotPlayingStrategy{
+public class EasyBotPlayingStrategy implements BotPlayingStrategy{
     @Override
     public Move executeMove(Player player, Game game) {
         Board board = game.getBoard();
@@ -20,7 +20,7 @@ public class MediumBotPlayingStrategy implements BotPlayingStrategy{
                     game.getBoardHistory().add(board.clone());
                     // TODO: Randomize the move for the Bot
                     // Identify all the empty cells and choose a cell randomly
-
+                    return move;
                 }
             }
         }
