@@ -1,5 +1,6 @@
 package service;
 
+import exception.EmptyMovesException;
 import exception.InvalidCellException;
 import model.*;
 import model.constant.BotDifficultyLevel;
@@ -57,7 +58,24 @@ public class GameService {
         Player player = winnerCheckStrategy.checkWinner(game.getBoard(), currentMove);
         if(player != null) return GameState.WINNER;
         else return GameState.IN_PROGRESS;
+    }
 
+    public Game undo(int noOfMoves, Game game) {
+        int undoMovesCount = noOfMoves;
+        while(undoMovesCount > 0) {
+            List<Move> movesList = game.getMoveHistory();
+            if(movesList.size() < undoMovesCount) throw new EmptyMovesException("Undo is not possible — Those many moves weren't played choose lower number (< "+movesList.size()+")"); // the game is already reverted to its initial state.
+            Move lastMove = movesList.get(movesList.size()-1);
+            // Step 1: Update the maps in WinnerCheckStrategy to the current state of game
+            winnerCheckStrategy.undoMove(game.getBoard(), lastMove);
+            // Step 2: Make changes in board
+            lastMove.getCell().setCellState(CellState.EMPTY);
+            lastMove.getCell().setPlayer(null);
+            // Step 3: remove move from game
+            game.getMoveHistory().remove(lastMove);
+            undoMovesCount -= 1;
+        }
+        return null;
     }
 
 }

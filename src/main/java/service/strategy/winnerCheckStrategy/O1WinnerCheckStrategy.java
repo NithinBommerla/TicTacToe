@@ -76,6 +76,27 @@ public class O1WinnerCheckStrategy implements WinnerCheckStrategy{
         }
     }
 
+    @Override
+    public void undoMove(Board board, Move currentMove) {
+        int size = board.getSize();
+        // fetch details
+        char symbol = currentMove.getPlayer().getSymbol();
+        int row = currentMove.getCell().getPosition().getRow();
+        int column = currentMove.getCell().getPosition().getColumn();
+
+        // Update the maps
+        // Update row and column Maps
+        HashMap<Character, Integer> rowMap = rowMaps.get(row);
+        HashMap<Character, Integer> columnMap = columnMaps.get(column);
+        rowMap.put(symbol, rowMap.get(symbol) - 1 );
+        columnMap.put(symbol, columnMap.get(symbol) - 1 );
+        // Update the diagonalMaps if applicable
+        if(row == column) leftDiagonalMap.put(symbol, leftDiagonalMap.get(symbol) - 1 );
+        if(row + column == size - 1) rightDiagonalMap.put(symbol, rightDiagonalMap.get(symbol) - 1 );
+        // Update the cornerMap if applicable
+        if((row == 0 || row == size-1) && (column == 0 || column == size-1)) cornerMap.put(symbol, cornerMap.get(symbol) - 1 );
+    }
+
 }
 
 /*

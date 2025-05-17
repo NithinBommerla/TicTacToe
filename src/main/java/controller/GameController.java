@@ -45,10 +45,10 @@ public class GameController {
         }
 
         for(int i = 0; i < playerCount; i++) {
-            System.out.println("Please Enter name for player: ");
+            System.out.println("Please Enter name for player"+(i+1)+": ");
             String playerName = sc.next();
             while(true) { // This loop is to ensure that Player who chooses a wrong symbol will get to choose again
-                    System.out.println("Please Enter symbol for player: ");
+                    System.out.println("Please Enter symbol for player "+playerName+": ");
                     char playerSymbol = sc.next().charAt(0);
                 try {
                     Player player = playerService.createPlayer(playerName, playerSymbol);
@@ -71,8 +71,17 @@ public class GameController {
             int row = sc.nextInt();
             System.out.println("Enter column to make a move");
             int column = sc.nextInt();
-            // TODO: Validate the move before proceeding
-            // i.e. whether the user's input is with in the range of board (row: [0, size-1], column: [0, size-1])
+            while(true) {
+                // TODO: Validate the move before proceeding
+                // i.e. whether the user's input is with in the range of board (row: [0, size-1], column: [0, size-1])
+                if(row < 0 || row >= game.getBoard().getSize() || column < 0 || column >= game.getBoard().getSize()) {
+                    System.out.println("Invalid Move!! Please enter row and column between [0 - "+(game.getBoard().getSize()-1)+"]");
+                } else break;
+                System.out.println("Re-enter row to make a move");
+                row = sc.nextInt();
+                System.out.println("Re-enter column to make a move");
+                column = sc.nextInt();
+            }
             return gameService.executeMove(player, game, row, column);
 
         } else {
@@ -86,7 +95,9 @@ public class GameController {
         return gameService.checkWinner(game, move);
     }
 
-    public Game undo(int noOfMoves, Game game) {return null;}
+    public Game undo(int noOfMoves, Game game) {
+        return gameService.undo(noOfMoves, game);
+    }
 
     public Game startGame(Game game) {return null;}
 
